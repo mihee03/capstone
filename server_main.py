@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, render_template, jsonify
 from collections import OrderedDict
 import pandas as pd
 from datetime import datetime
@@ -9,7 +9,6 @@ app = Flask(__name__)
 temperature_file = "./실시간기온.xlsx"
 passenger_file1 = "./우대권병합데이터06.csv"
 passenger_file2 = "./우대권병합데이터12.csv"
-
 
 # 데이터 불러오기
 temperature_df = pd.read_excel(temperature_file)
@@ -23,6 +22,12 @@ passenger_df = pd.concat([df1, df2], ignore_index=True)
 # '일시' 열을 datetime 형식으로 변환
 passenger_df['일시'] = pd.to_datetime(passenger_df['일시'])
 
+# 웹 페이지 라우트
+@app.route('/')
+def home():
+    return render_template('index.html')  # 'templates' 폴더 내 index.html을 렌더링
+
+# API 엔드포인트 라우트
 @app.route('/get-hourly-passengers')
 def get_hourly_passengers():
     # 현재 날짜와 시간 가져오기
